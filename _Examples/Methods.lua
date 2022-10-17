@@ -1,3 +1,4 @@
+---@meta
 --Syntax ---@param <name[?]> <type[|type...]> [description]
 
 ---@param paramName ParamType Description

@@ -29,7 +29,6 @@ namespace LuaDocs
             //Extract docs
             var xmlVisitor = new XmlVisitor();
             target.Accept(xmlVisitor);
-            //var idMap = target.IdMap;
             var documentation = xmlVisitor.Documentation;
 
             LuaDocumenter.Document(documentation, target.IdMap, Assembly.GetAssembly(typeof(FakeClass)));

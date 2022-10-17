@@ -14,10 +14,19 @@ namespace LuaDocs
 {
     public static class LuaFormat
     {
-        public static string LuaParamNames(this ParameterInfo[] paramsInfo) => String.Join(",", paramsInfo.Select(p => p.Name).ToArray());
-        //public static string LuaReturn(this ConstructorInfo ci) => $"---@return {ci.ReflectedType.Name}";
-        //public static string LuaParam(this ParameterInfo pi) => $"---@param {pi.ParameterType.Name}{(pi.IsOptional ? "?" : "")} {pi.ParameterType.LuaType()} <<Documentation?>>";
+        /// <summary>
+        /// Formats parameters to their appearance in a Lua function
+        /// </summary>
+        public static string LuaParamNames(this ParameterInfo[] paramsInfo) => String.Join(",", paramsInfo.Select(p => p.IsParams() ? "..." : p.Name).ToArray());
 
+        /// <summary>
+        /// Formats a parameter to Lua ---@param notation
+        /// </summary>
+        public static string LuaParamAnnotation(this ParameterInfo p, string paramDesc = "") => p.IsParams() ?
+            //---@param ... Type Description of variadic type
+            $"---@param ... {p.LuaType()} {paramDesc}" :
+            //---@param <name[?]> <type[|type...]> [description]
+            $"---@param {p.Name}{(p.IsOptional ? "?" : "")} {p.LuaType()} {paramDesc}";
 
         //Maps CLR type to what will be used in Lua
         private static Dictionary<string, string> luaTypes = new Dictionary<string, string>() {
@@ -52,7 +61,7 @@ namespace LuaDocs
 {            "System.Collections.IEnumerator" , "iterator"},
             };
 
-       
+
         public static string LuaReturnType(this ConstructorInfo info) =>
             GetOrAddLuaType(info.GetUnderlyingType().FullName);
 
@@ -61,7 +70,11 @@ namespace LuaDocs
 
         public static string LuaType(this EventInfo info) => info.EventHandlerType.LuaType();
         public static string LuaType(this FieldInfo info) => info.FieldType.LuaType();
-        public static string LuaType(this ParameterInfo info) => info.ParameterType.LuaType();
+        public static string LuaType(this ParameterInfo info) => info.IsParams() ?
+            //Remove [] from variadic param
+            //Maybe switch to range if changing from 3.5: .LuaType()[0..^2]
+            info.ParameterType.LuaType().Remove(info.ParameterType.LuaType().Length - 2) :
+            info.ParameterType.LuaType();
         public static string LuaType(this PropertyInfo info) => info.PropertyType.LuaType();
 
         /// <summary>
@@ -86,7 +99,7 @@ namespace LuaDocs
             if (type.IsGenericType)
             {
                 var generics = type.GetGenericArguments();
-                if(generics.Length == 2)
+                if (generics.Length == 2)
                 {
                     return $"{{ [{generics[0].LuaType()}] = {generics[1].LuaType()} }}";
                 }
@@ -100,7 +113,7 @@ namespace LuaDocs
             if (luaTypes.TryGetValue(name, out var typeName))
             {
                 return typeName;
-            }           
+            }
 
             var lastIndex = Math.Max(name.LastIndexOf('.'), name.LastIndexOf('+')) + 1;
             var shortName = name.Substring(lastIndex);
@@ -141,32 +154,52 @@ namespace LuaDocs
 
 
         #region LuaDefault
+        //Todo: definitely rethink this.  
         //Needs to be a way to map between default/constant values in C# to their Lua equivalent
-        //Todo: definitely rethink this.  Harmony hack
         //https://stackoverflow.com/questions/407337/net-get-default-value-for-a-reflected-propertyinfo
-        //Maybe use declaring type with Traverse?
+        //Harmony hack maybe use declaring type with Traverse?
         //return Traverse.Create(type).Field(info.Name).GetValue();
         public static object LuaDefault(this FieldInfo info)
         {
             if (info.IsLiteral)
             {
                 var value = info.GetRawConstantValue();
-                if (value is string)
-                    return $"\"{value}\"";
-                return value;
+                return LuaValue(value);
             }
-
-            return "\"TODO\"";
-            
+            return LuaValue(info.FieldType);
         }
-        public static object LuaDefault(this PropertyInfo info) {
-            //Raw constant value for an enum would be "1" vs. Enum.A (= 1)
-            var value = info.GetConstantValue();    
-            if (info.PropertyType.IsEnum || value is string)
-                return $"\"{value}\"";
-            return value;
+        public static object LuaDefault(this PropertyInfo info)
+        {
+            //Todo: Not sure how to safely check if property has constant value
+            try
+            {
+                //Raw constant value for an enum would be "1" vs. Enum.A (= 1)
+                var value = info.GetConstantValue();
+                if (info.PropertyType.IsEnum)
+                {
+                    Debugger.Break();
+                }
+                return LuaValue(value);
+            }
+            catch (System.Exception ex)
+            {
+                var def = info.PropertyType.GetDefault();
+                var str = LuaValue(def);
+                return LuaValue(info.PropertyType.GetDefault());
+            }
         }
 
+        private static object LuaValue(object obj)
+        {
+            if (obj is null)
+                return "nil";
+
+            if (obj is string)
+                return $"\"{obj}\"";
+
+            //Throw error?
+            return "nil";
+        }
 
         //https://stackoverflow.com/questions/407337/net-get-default-value-for-a-reflected-propertyinfo
         /// <summary>
@@ -232,7 +265,7 @@ namespace LuaDocs
             // Fail with exception
             throw new ArgumentException("{" + MethodInfo.GetCurrentMethod() + "} Error:\n\nThe supplied value type <" + type +
                 "> is not a publicly-visible type, so the default value cannot be retrieved");
-        } 
+        }
         #endregion
     }
 }

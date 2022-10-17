@@ -17,37 +17,7 @@ namespace FakeProject
     /// <seealso cref="short"/>
     public class FakeClass : IAbstract, IInterface
     {
-        #region Events / Delegates
-        //https://learn.microsoft.com/en-us/dotnet/csharp/programming-guide/events/
-        //https://learn.microsoft.com/en-us/dotnet/csharp/programming-guide/delegates/
-        /// <summary>
-        /// Event check
-        /// </summary>
-        
-        
-        // Existing event
-        public event OnChangeEventHandler OnEventFire;
-
-        /// <summary>
-        /// Delegate for event
-        /// </summary>
-        //public delegate void EventHandler(object sender, Event args)
-
-        public void WireEvent()
-        {
-            OnEventFire += FakeClass_OnEventFire;
-            OnEventFire += (sender, e) => { };            
-        }
-
-        private void FakeClass_OnEventFire(object sender, SqlNotificationEventArgs e)
-        {
-            throw new NotImplementedException();
-        }
-
-        //Multi-cast
-        #endregion
-
-        #region Members (Fields, Properties, Constants/Read-only, Methods, Constructors)  //-Events,
+        #region Instance Members (Fields, Properties, Read-only, Methods, Constructors)  //-Events,
         //https://learn.microsoft.com/en-us/dotnet/csharp/programming-guide/classes-and-structs/members
         #region Fields
         //https://learn.microsoft.com/en-us/dotnet/csharp/programming-guide/classes-and-structs/fields
@@ -80,13 +50,11 @@ namespace FakeProject
         public string AutoProperty { get; set; }
         #endregion
 
-        #region Constants / Read-only
+        #region Read-only
         //https://learn.microsoft.com/en-us/dotnet/csharp/programming-guide/classes-and-structs/constants
         /// <summary>
-        /// Constant field
+        /// Read-only instance field
         /// </summary>
-        const string CONST_FIELD = "Constant field";
-
         readonly string READONLY_FIELD = "Readonly field";
         #endregion
 
@@ -142,7 +110,7 @@ namespace FakeProject
         /// Constructor with a default parameter
         /// </summary>
         /// <param name="defaultString"></param>
-        public FakeClass(string defaultString = "DefaultString") { }
+        public FakeClass(int number, string defaultString = "DefaultString") { }
 
         //https://learn.microsoft.com/en-us/dotnet/csharp/programming-guide/classes-and-structs/nested-types
         /// <summary>
@@ -169,55 +137,136 @@ namespace FakeProject
         #endregion
         #endregion
 
-        #region Types (Class, Interface, Struct, Enum, Delegate) --Tuples, Records, Nullables
-        //https://learn.microsoft.com/en-us/dotnet/csharp/tour-of-csharp/types
+        #region Static Members (Fields, Properties, Constants/Read-only, Methods, Constructors)  //-Events,
+        //https://learn.microsoft.com/en-us/dotnet/csharp/programming-guide/classes-and-structs/members
+        #region Fields
+        //https://learn.microsoft.com/en-us/dotnet/csharp/programming-guide/classes-and-structs/fields
+        /// <summary>
+        /// Private static field
+        /// </summary>
+        private static string _STcustomBackingField = "Default val";
 
+        /// <summary>
+        /// Public static field
+        /// </summary>
+        public static string STPublicField;
+        #endregion
+
+        #region Properties
+        //https://learn.microsoft.com/en-us/dotnet/csharp/programming-guide/classes-and-structs/properties
+        /// <summary>
+        /// public static property
+        /// </summary>
+        public static string STPublicProperty { get => _STcustomBackingField; set => _STcustomBackingField = value; }
+
+        /// <summary>
+        /// Get-only static property
+        /// </summary>
+        public static string STGetOnlyProperty { get => _STcustomBackingField; }
+
+        /// <summary>
+        /// Static property with auto-generated backing field
+        /// </summary>
+        public static string STAutoProperty { get; set; }
+        #endregion
+
+        #region Constants / Read-only
+        //https://learn.microsoft.com/en-us/dotnet/csharp/programming-guide/classes-and-structs/constants
+        /// <summary>
+        /// Constant field
+        /// </summary>
+        public const string STCONST_FIELD = "Constant field";
+
+        /// <summary>
+        /// Static readonly field
+        /// </summary>
+        public readonly static string STREADONLY_FIELD = "Readonly field";
+        #endregion
+
+        #region Methods
+        //https://learn.microsoft.com/en-us/dotnet/csharp/programming-guide/classes-and-structs/methods
+        /// <summary>
+        /// Static void method with blank parameter documentation
+        /// </summary>
+        /// <param name="c">Description of parameter c</param>
+        public static void STTestVoid(string c) { }
+
+        /// <summary>
+        /// Adds two strings
+        /// </summary>
+        /// <param name="a">The first string</param>
+        /// <param name="b">Second string</param>
+        /// <returns>Concatenation of two strings</returns>
+        public static string STTestMethod(string a, string b = "") => a + b;
+
+        public static FakeEnum STTestMethodEnum(FakeEnum e) => FakeEnum.A;
+        #endregion
+        #endregion
+
+        #region Nested Types (Enum) --Class, Interface, Struct, Delegate, Tuples, Records, Nullables?
+        //https://learn.microsoft.com/en-us/dotnet/csharp/tour-of-csharp/types
         #region Enums / Flags
         /// <summary>
-        /// Enum check
+        /// Fake enum desc
         /// </summary>
         public enum FakeEnum
         {
+            /// <summary>
+            /// First value of nested enum
+            /// </summary>
             A,
+            /// <summary>
+            /// Second value of nested enum
+            /// </summary>
             B,
         }
 
+        /// <summary>
+        /// Fake nested byte enum desc
+        /// </summary>
         public enum EnumByte : byte
         {
-
+            /// <summary>
+            /// First byte value
+            /// </summary>
+            C = (byte)0,
+            /// <summary>
+            /// Second byte value
+            /// </summary>
+            D = (byte)1,
         }
 
         /// <summary>
-        /// 
+        /// Enum with flags attribute
         /// </summary>
-        /// 
         [Flags]
         public enum EnumFlag
         {
+            /// <summary>
+            /// Red bit
+            /// </summary>
             Red = 0x1,
+            /// <summary>
+            /// Green bit
+            /// </summary>
             Green = 0x2,
+            /// <summary>
+            /// Blue bit
+            /// </summary>
             Blue = 0x4,
-            Yellow = 0x8,
         }
         #endregion
-
-
         #endregion
 
         #region Other
-        //Static            https://learn.microsoft.com/en-us/dotnet/csharp/programming-guide/classes-and-structs/static-classes-and-static-class-members
         //Attributes        https://learn.microsoft.com/en-us/dotnet/csharp/programming-guide/classes-and-structs/abstract-and-sealed-classes-and-class-members
         //Access modifiers  https://learn.microsoft.com/en-us/dotnet/csharp/programming-guide/classes-and-structs/access-modifiers
         //ref, out
-        //Record
+        //record
         //async             https://learn.microsoft.com/en-us/dotnet/csharp/programming-guide/concepts/async/
         //arrays            https://learn.microsoft.com/en-us/dotnet/csharp/programming-guide/arrays/single-dimensional-arrays
         //generics          https://learn.microsoft.com/en-us/dotnet/csharp/programming-guide/generics/generic-type-parameters
-        //partialne
-
-        #region Attributes
-
-        #endregion
+        //partials
         #endregion
 
     }

@@ -1,3 +1,4 @@
+---@meta
 ---@type string[]
 local stringArray
 

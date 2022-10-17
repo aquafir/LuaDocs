@@ -5,13 +5,13 @@ using System.Text;
 
 namespace FakeProject
 {
-    public class FakeEventArgs
+    public class FakeEvent
     {
         /// <summary>
         /// Constructor of fake event
         /// </summary>
         /// <param name="text">Text passed along on raised event</param>
-        public FakeEventArgs(string text) { Text = text; }
+        public FakeEvent(string text) { Text = text; }
         /// <summary>
         /// Text of event
         /// </summary>
@@ -27,7 +27,7 @@ namespace FakeProject
             /// </summary>
             /// <param name="sender">Send of event</param>
             /// <param name="e">Fake event args</param>
-            public delegate void FakeEventHandler(object sender, FakeEventArgs e);
+            public delegate void FakeEventHandler(object sender, FakeEvent e);
 
             /// <summary>
             /// Some fake event
@@ -40,7 +40,7 @@ namespace FakeProject
             /// </summary>
             protected virtual void RaiseFakeEvent()
             {
-                FakeEvent?.Invoke(this, new FakeEventArgs("Hello"));
+                FakeEvent?.Invoke(this, new FakeEvent("Hello"));
             }
         }
 
@@ -51,7 +51,7 @@ namespace FakeProject
             fakePub.FakeEvent += FakePub_FakeEvent;
         }
 
-        private static void FakePub_FakeEvent(object sender, FakeEventArgs e)
+        private static void FakePub_FakeEvent(object sender, FakeEvent e)
         {
             throw new NotImplementedException();
         }

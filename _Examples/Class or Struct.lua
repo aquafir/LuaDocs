@@ -1,6 +1,9 @@
+---@meta
 ---@see Unsure how to have metadata for class/struct.  @see might be an option
 ---@class ClassName
 ---@field memberName memberType Description  ...for each visible? 
+---@field new fun(str: string): ClassName # Constructor using a string
+---@field SayName fun(): string # Method that returns a string
 --@field isEnabled function Methods / constructors can be added like this but that messes up function Intellisense?
 local ClassName = {}
 ---@param name string Name provided for method
@@ -12,7 +15,7 @@ function ClassName:ClassMethod(name) end
 ---@field memberName submemberType Sub desc
 
 ---@type ClassName
-local classInstance = {}
+classInstance = {}
 classInstance.ClassMethod()
 -- ClassName.someField = 
 

@@ -1,3 +1,4 @@
+---@meta
 ---@type ClassName
 local ClassName = {}
 ---@param staticArg string Static function argument

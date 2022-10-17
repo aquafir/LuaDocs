@@ -1,3 +1,4 @@
+---@meta
 --Alias
 ---@alias Side # Sides of an object
 ---| `Side.Left` # The left side of the device
