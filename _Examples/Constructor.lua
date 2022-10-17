@@ -11,4 +11,14 @@ local obj = new("SomeClass")
 obj.SomeClassMethod()
 
 
+---@class SomeClass
+---@field someField string Field description
 
+---@type SomeClass
+local SomeClass = {}
+
+---@return SomeClass
+SomeClass.new = function() end
+
+local constructedObject = SomeClass:new()
+local field = constructedObject.someField
