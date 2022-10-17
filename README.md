@@ -35,7 +35,6 @@ NuDoqs does not appear to look at members/types that are lacking XML documentati
 Reflection with desired [binding flags](https://learn.microsoft.com/en-us/dotnet/api/system.reflection.bindingflags?view=net-7.0) or [Harmony's utilities](https://harmony.pardeike.net/articles/utilities.html) used in `LuaDocumenter` to traverse an assembly:
 
 * Iterate types in an assembly.
-
 * *Filter out what you want.  Currently just ignore MS/System namespaces*
 * Handle enums separate from class/struct/etc.
 * Any Type encountered is [translated to an equivalent](#Moonsharp Conversions) Lua type.
@@ -52,14 +51,17 @@ Reflection with desired [binding flags](https://learn.microsoft.com/en-us/dotnet
       * Try to set defaults.  ***Definitely need to think more about this***.
         * Convert value to string value that would be used in Lua declaration
     * Add static methods similar to instance methods, but on the created class Type
-* Write out to `./definitions/_definitions.lua`
+* Write out to `_Examples/definitions.lua`
 
 
 
 ### Todo
 
 * Events
+  * Possible [@operator](https://github.com/sumneko/lua-language-server/wiki/Annotations#operator) support
+
 * Think about virtual/interface/abstract, attributes, nested stuff, defaults
+* Think about visibility/accessibility
 * [@async](#@async) support.  Very easy if not trying to target 3.5
 * [@generic](#@generic) support / other C# --> Lua type mapping improvements.
 * [@source](#@source) support.  Should be easy to point to trevis' docs
@@ -67,7 +69,6 @@ Reflection with desired [binding flags](https://learn.microsoft.com/en-us/dotnet
   * Other config / plugin / bundling of annotation possibilities 
   * [@see](#@see) possible usage for things that are missing other documentation support
 * Better exclusion of unwanted elements
-* Think about visibility/accessibility
 * Guard against weirdness (e.g., System.Void defaults, duplicate friendly type names)
 * Add missing things to test in `FakeProject`
 * Clean up code and maybe package it for non-UB use eventually?

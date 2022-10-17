@@ -1,6 +1,6 @@
----@module "Constructor"
+--@module "Constructor"
 ---@module "definitions"
-
+---@module "Static"
 
 --Adding constructor to static object named after type
 local staticTest = SomeClass:new()
@@ -19,3 +19,4 @@ local defTestVariadic = FakeClass.new(1, 2, 3, 4)
 local defFieldTest = defConstTest.GetOnlyProperty
 -- local defStaticTest = FakeClass.READONLY_FIELD   -- Not working
 
+local test = FakeClass.new(FakeClass.new(), "this")

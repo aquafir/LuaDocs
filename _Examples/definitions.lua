@@ -1,22 +1,21 @@
 ---@meta
--------------Instance Class/Struct T:FakeProject.FakeClass-----------
+---Fake class to cover cases
 ---@class FakeClass
--------------------------Fields------------------------------
 ---@field _customBackingField string Private field
 ---@field PublicField string Public field
 ---@field READONLY_FIELD string Read-only instance field
 ---@field _nestedClassInstance NestedClass 
------------------------Properties----------------------------
 ---@field PublicProperty string Public property
 ---@field GetOnlyProperty string Get-only property
 ---@field AutoProperty string Property with auto-generated backing field
 ---@type FakeClass
 FakeClass = { }
 
-------------------------Methods------------------------------
+---Void method with blank parameter documentation
 ---@param c string Description of parameter c
 function FakeClass:TestVoid(c) end
 
+---Adds two strings
 ---@param a string The first string
 ---@param b? string Second string
 ---@return string # Concatenation of two strings
@@ -33,9 +32,11 @@ function FakeClass:TestAbstract(a,b) end
 
 function FakeClass:InterfaceMethod() end
 
+---Static void method with blank parameter documentation
 ---@param c string Description of parameter c
 function FakeClass:STTestVoid(c) end
 
+---Adds two strings
 ---@param a string The first string
 ---@param b? string Second string
 ---@return string # Concatenation of two strings
@@ -61,27 +62,27 @@ function FakeClass:GetHashCode() end
 ---@return userdata # 
 function FakeClass:GetType() end
 
-------------------------Events------------------------------
----------------------Constructors----------------------------
+---Empty constructor
 ---@return FakeClass # 
 FakeClass.new = function() end
 
+---Constructor with parameters
 ---@param a FakeClass A.  B left empty
 ---@param b string 
 ---@return FakeClass # 
 FakeClass.new = function(a,b) end
 
+---Overload constructor with params
 ---@param ... number 
 ---@return FakeClass # 
 FakeClass.new = function(...) end
 
+---Constructor with a default parameter
 ---@param number number 
 ---@param defaultString? string 
 ---@return FakeClass # 
 FakeClass.new = function(number,defaultString) end
 
--------------Static Class/Struct T:FakeProject.FakeClass-----------
--------------------------Fields------------------------------
 ---@type string Private static field
 FakeClass._STcustomBackingField = nil
 ---@type string Public static field
@@ -90,17 +91,17 @@ FakeClass.STPublicField = nil
 FakeClass.STREADONLY_FIELD = nil
 ---@type string Constant field
 FakeClass.STCONST_FIELD = "Constant field"
------------------------Properties----------------------------
 ---@type string public static property
 FakeClass.STPublicProperty = nil
 ---@type string Get-only static property
 FakeClass.STGetOnlyProperty = nil
 ---@type string Static property with auto-generated backing field
 FakeClass.STAutoProperty = nil
-------------------------Methods------------------------------
+---Void method with blank parameter documentation
 ---@param c string Description of parameter c
 FakeClass.TestVoid = function(c) end
 
+---Adds two strings
 ---@param a string The first string
 ---@param b? string Second string
 ---@return string # Concatenation of two strings
@@ -117,9 +118,11 @@ FakeClass.TestAbstract = function(a,b) end
 
 FakeClass.InterfaceMethod = function() end
 
+---Static void method with blank parameter documentation
 ---@param c string Description of parameter c
 FakeClass.STTestVoid = function(c) end
 
+---Adds two strings
 ---@param a string The first string
 ---@param b? string Second string
 ---@return string # Concatenation of two strings
@@ -146,21 +149,19 @@ FakeClass.GetHashCode = function() end
 FakeClass.GetType = function() end
 
 ----Enum----T:FakeProject.NonNestedEnum
+---Enum outside of class
 ---@enum NonNestedEnum
 NonNestedEnum = { -- Enum outside of class
 	A = 0, -- A is first
 	B = 1, -- B is second
 	C = 2, -- C is third
 }
--------------Instance Class/Struct T:FakeProject.FakeEvent-----------
+---
 ---@class FakeEvent
--------------------------Fields------------------------------
------------------------Properties----------------------------
 ---@field Text string Text of event
 ---@type FakeEvent
 FakeEvent = { }
 
-------------------------Methods------------------------------
 function FakeEvent:AddEvent() end
 
 ---@return string # 
@@ -176,16 +177,11 @@ function FakeEvent:GetHashCode() end
 ---@return userdata # 
 function FakeEvent:GetType() end
 
-------------------------Events------------------------------
----------------------Constructors----------------------------
+---Constructor of fake event
 ---@param text string Text passed along on raised event
 ---@return FakeEvent # 
 FakeEvent.new = function(text) end
 
--------------Static Class/Struct T:FakeProject.FakeEvent-----------
--------------------------Fields------------------------------
------------------------Properties----------------------------
-------------------------Methods------------------------------
 FakeEvent.AddEvent = function() end
 
 ---@return string # 
@@ -201,16 +197,14 @@ FakeEvent.GetHashCode = function() end
 ---@return userdata # 
 FakeEvent.GetType = function() end
 
--------------Instance Class/Struct T:FakeProject.Coords-----------
+---Structure for coordinates
 ---@class Coords
--------------------------Fields------------------------------
------------------------Properties----------------------------
 ---@field X number X coord
 ---@field Y number 
 ---@type Coords
 Coords = { }
 
-------------------------Methods------------------------------
+---ToString override for coordinates
 ---@return string # Formatted coordinates
 function Coords:ToString() end
 
@@ -224,17 +218,13 @@ function Coords:GetHashCode() end
 ---@return userdata # 
 function Coords:GetType() end
 
-------------------------Events------------------------------
----------------------Constructors----------------------------
+---Constructor for coordinate struct
 ---@param x number X coord
 ---@param y number Y coord
 ---@return Coords # 
 Coords.new = function(x,y) end
 
--------------Static Class/Struct T:FakeProject.Coords-----------
--------------------------Fields------------------------------
------------------------Properties----------------------------
-------------------------Methods------------------------------
+---ToString override for coordinates
 ---@return string # Formatted coordinates
 Coords.ToString = function() end
 
@@ -248,14 +238,11 @@ Coords.GetHashCode = function() end
 ---@return userdata # 
 Coords.GetType = function() end
 
--------------Instance Class/Struct T:FakeProject.IAbstract-----------
+---
 ---@class IAbstract
--------------------------Fields------------------------------
------------------------Properties----------------------------
 ---@type IAbstract
 IAbstract = { }
 
-------------------------Methods------------------------------
 ---@return string # 
 function IAbstract:Virtual() end
 
@@ -277,12 +264,6 @@ function IAbstract:GetHashCode() end
 ---@return userdata # 
 function IAbstract:GetType() end
 
-------------------------Events------------------------------
----------------------Constructors----------------------------
--------------Static Class/Struct T:FakeProject.IAbstract-----------
--------------------------Fields------------------------------
------------------------Properties----------------------------
-------------------------Methods------------------------------
 ---@return string # 
 IAbstract.Virtual = function() end
 
@@ -304,34 +285,22 @@ IAbstract.GetHashCode = function() end
 ---@return userdata # 
 IAbstract.GetType = function() end
 
--------------Instance Class/Struct T:FakeProject.IInterface-----------
+---
 ---@class IInterface
--------------------------Fields------------------------------
------------------------Properties----------------------------
 ---@type IInterface
 IInterface = { }
 
-------------------------Methods------------------------------
 function IInterface:InterfaceMethod() end
 
-------------------------Events------------------------------
----------------------Constructors----------------------------
--------------Static Class/Struct T:FakeProject.IInterface-----------
--------------------------Fields------------------------------
------------------------Properties----------------------------
-------------------------Methods------------------------------
 IInterface.InterfaceMethod = function() end
 
--------------Instance Class/Struct T:FakeProject.UndocumentedClass-----------
+---
 ---@class UndocumentedClass
--------------------------Fields------------------------------
 ---@field Field string 
------------------------Properties----------------------------
 ---@field Property string 
 ---@type UndocumentedClass
 UndocumentedClass = { }
 
-------------------------Methods------------------------------
 ---@param Param string 
 ---@param ... number 
 ---@return FakeClass # 
@@ -350,15 +319,9 @@ function UndocumentedClass:GetHashCode() end
 ---@return userdata # 
 function UndocumentedClass:GetType() end
 
-------------------------Events------------------------------
----------------------Constructors----------------------------
 ---@return UndocumentedClass # 
 UndocumentedClass.new = function() end
 
--------------Static Class/Struct T:FakeProject.UndocumentedClass-----------
--------------------------Fields------------------------------
------------------------Properties----------------------------
-------------------------Methods------------------------------
 ---@param Param string 
 ---@param ... number 
 ---@return FakeClass # 
@@ -377,15 +340,12 @@ UndocumentedClass.GetHashCode = function() end
 ---@return userdata # 
 UndocumentedClass.GetType = function() end
 
--------------Instance Class/Struct T:FakeProject.FakeClass.NestedClass-----------
+---Nested class
 ---@class NestedClass
--------------------------Fields------------------------------
 ---@field _fakeClass FakeClass Nested class private field
------------------------Properties----------------------------
 ---@type NestedClass
 NestedClass = { }
 
-------------------------Methods------------------------------
 ---@return string # 
 function NestedClass:ToString() end
 
@@ -399,17 +359,12 @@ function NestedClass:GetHashCode() end
 ---@return userdata # 
 function NestedClass:GetType() end
 
-------------------------Events------------------------------
----------------------Constructors----------------------------
+---Nested class constructor
 ---@param s string S
 ---@param fc? FakeClass Accepts fake class
 ---@return NestedClass # 
 NestedClass.new = function(s,fc) end
 
--------------Static Class/Struct T:FakeProject.FakeClass.NestedClass-----------
--------------------------Fields------------------------------
------------------------Properties----------------------------
-------------------------Methods------------------------------
 ---@return string # 
 NestedClass.ToString = function() end
 
@@ -424,32 +379,32 @@ NestedClass.GetHashCode = function() end
 NestedClass.GetType = function() end
 
 ----Enum----T:FakeProject.FakeClass.FakeEnum
+---Fake enum desc
 ---@enum FakeEnum
 FakeEnum = { -- Fake enum desc
 	A = 0, -- First value of nested enum
 	B = 1, -- Second value of nested enum
 }
 ----Enum----T:FakeProject.FakeClass.EnumByte
+---Fake nested byte enum desc
 ---@enum EnumByte
 EnumByte = { -- Fake nested byte enum desc
 	C = 0, -- First byte value
 	D = 1, -- Second byte value
 }
 ----Enum----T:FakeProject.FakeClass.EnumFlag
+---Enum with flags attribute
 ---@enum EnumFlag
 EnumFlag = { -- Enum with flags attribute
 	Red = 1, -- Red bit
 	Green = 2, -- Green bit
 	Blue = 4, -- Blue bit
 }
--------------Instance Class/Struct T:FakeProject.FakeEvent.FakeEventPublisher-----------
+---Published of fake events
 ---@class FakeEventPublisher
--------------------------Fields------------------------------
------------------------Properties----------------------------
 ---@type FakeEventPublisher
 FakeEventPublisher = { }
 
-------------------------Methods------------------------------
 ---@return string # 
 function FakeEventPublisher:ToString() end
 
@@ -463,21 +418,15 @@ function FakeEventPublisher:GetHashCode() end
 ---@return userdata # 
 function FakeEventPublisher:GetType() end
 
-------------------------Events------------------------------
 ---@param value FakeEventHandler 
 function FakeEventPublisher:add_FakeEvent(value) end
 
 ---@param value FakeEventHandler 
 function FakeEventPublisher:remove_FakeEvent(value) end
 
----------------------Constructors----------------------------
 ---@return FakeEventPublisher # 
 FakeEventPublisher.new = function() end
 
--------------Static Class/Struct T:FakeProject.FakeEvent.FakeEventPublisher-----------
--------------------------Fields------------------------------
------------------------Properties----------------------------
-------------------------Methods------------------------------
 ---@return string # 
 FakeEventPublisher.ToString = function() end
 
@@ -491,20 +440,17 @@ FakeEventPublisher.GetHashCode = function() end
 ---@return userdata # 
 FakeEventPublisher.GetType = function() end
 
--------------Instance Class/Struct T:FakeProject.FakeEvent.FakeEventPublisher.FakeEventHandler-----------
+---Some fake event handler
 ---@class FakeEventHandler
--------------------------Fields------------------------------
 ---@field _target userdata 
 ---@field _methodBase MethodBase 
 ---@field _methodPtr IntPtr 
 ---@field _methodPtrAux IntPtr 
------------------------Properties----------------------------
 ---@field Method function 
 ---@field Target userdata 
 ---@type FakeEventHandler
 FakeEventHandler = { }
 
-------------------------Methods------------------------------
 ---@param sender userdata 
 ---@param e FakeEvent 
 function FakeEventHandler:Invoke(sender,e) end
@@ -546,17 +492,11 @@ function FakeEventHandler:ToString() end
 ---@return userdata # 
 function FakeEventHandler:GetType() end
 
-------------------------Events------------------------------
----------------------Constructors----------------------------
 ---@param object userdata 
 ---@param method IntPtr 
 ---@return FakeEventHandler # 
 FakeEventHandler.new = function(object,method) end
 
--------------Static Class/Struct T:FakeProject.FakeEvent.FakeEventPublisher.FakeEventHandler-----------
--------------------------Fields------------------------------
------------------------Properties----------------------------
-------------------------Methods------------------------------
 ---@param sender userdata 
 ---@param e FakeEvent 
 FakeEventHandler.Invoke = function(sender,e) end

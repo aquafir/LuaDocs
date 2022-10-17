@@ -78,16 +78,17 @@ namespace LuaDocs
         private static void HandleInstanceType(Type type, MemberInfo info, string id, List<XmlEntry> docs)
         {
             //Headers for sections?
-            output.AppendLine($"-------------Instance Class/Struct {id}-----------");
+            //output.AppendLine($"-------------Instance Class/Struct {id}-----------");
 
             //Currently just distinguishing between static and instance?
             var flags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.FlattenHierarchy;
 
+            //Document class;
+            var summary = docs is null ? "" : docs.FirstOrDefault().Representation;
+            output.AppendLine($"---{summary}");
+
             //Type's @class must be followed by field/property annotations
             output.AppendLine($"---@class {type.LuaType()}");
-
-            //Unsure how to document xml documentation for class
-            //foreach(var element in docs) { }
 
             HandleInstanceFields(type, flags);
 
@@ -107,7 +108,7 @@ namespace LuaDocs
 
         private static void HandleInstanceFields(Type type, BindingFlags flags)
         {
-            output.AppendLine("-------------------------Fields------------------------------");
+            //output.AppendLine($"-------------------------Fields------------------------------");
             var fields = type.GetFields(flags)
                 //Filter out auto-generated stuff
                 .Where(f => f.GetCustomAttributes(typeof(CompilerGeneratedAttribute), true).Length == 0).ToArray();
@@ -123,7 +124,7 @@ namespace LuaDocs
 
         private static void HandleInstanceProperties(Type type, BindingFlags flags)
         {
-            output.AppendLine("-----------------------Properties----------------------------");
+            //output.AppendLine($"-----------------------Properties----------------------------");
             var properties = type.GetProperties(flags)
                 .Where(f => f.GetCustomAttributes(typeof(CompilerGeneratedAttribute), true).Length == 0).ToArray();
             foreach (var property in properties)
@@ -138,7 +139,7 @@ namespace LuaDocs
 
         private static void HandleInstanceEvents(Type type)
         {
-            output.AppendLine("------------------------Events------------------------------");
+            //output.AppendLine($"------------------------Events------------------------------");
             var events = type.GetEvents()
                 .Where(x => !x.IsSpecialName); //IsHideBySig?
                                                //.Where(f => f.GetCustomAttributes(typeof(CompilerGeneratedAttribute), true).Length == 0).ToArray();
@@ -152,7 +153,7 @@ namespace LuaDocs
 
         private static void HandleInstanceMethods(Type type)
         {
-            output.AppendLine("------------------------Methods------------------------------");
+            //output.AppendLine($"------------------------Methods------------------------------");
             var methods = type.GetMethods()
                 .Where(x => !x.IsSpecialName); //IsHideBySig?
                                                //.Where(f => f.GetCustomAttributes(typeof(CompilerGeneratedAttribute), true).Length == 0).ToArray();
@@ -165,7 +166,7 @@ namespace LuaDocs
 
         private static void HandleInstanceConstructors(Type type)
         {
-            output.AppendLine("---------------------Constructors----------------------------");
+            //output.AppendLine($"---------------------Constructors----------------------------");
             //trevis: Side note, I also changed constructor syntax to MyClass.new() instead of MyClass.__new()…
             var constructors = type.GetConstructors();
             foreach (var method in constructors)
@@ -180,7 +181,11 @@ namespace LuaDocs
 
                 var mId = map.FindId(method);
                 documentation.TryGetValue(mId, out var mDocs);
-                var mDesc = mDocs is null ? "" : mDocs.Where(x => x.XmlType == XmlType.Summary).FirstOrDefault().Representation;
+                if (mDocs is not null)
+                {
+                    var mDesc = mDocs.Where(x => x.XmlType == XmlType.Summary).FirstOrDefault().Representation;
+                    output.AppendLine($"---{mDesc}");
+                }
 
                 foreach (var p in parameters)
                 {
@@ -243,7 +248,12 @@ namespace LuaDocs
 
             var mId = map.FindId(method);
             documentation.TryGetValue(mId, out var mDocs);
-            var mDesc = mDocs is null ? "" : mDocs.Where(x => x.XmlType == XmlType.Summary).FirstOrDefault().Representation;
+            if (mDocs is not null)
+            {
+                var mDesc = mDocs.Where(x => x.XmlType == XmlType.Summary).FirstOrDefault().Representation;
+                output.AppendLine($"---{mDesc}");
+            }
+
 
             foreach (var p in parameters)
             {
@@ -271,10 +281,7 @@ namespace LuaDocs
         private static void HandleStaticType(Type type, MemberInfo info, string id, List<XmlEntry> docs)
         {
             //Headers for sections?
-            output.AppendLine($"-------------Static Class/Struct {id}-----------");
-
-            //Unsure how to document xml documentation for class
-            //foreach(var element in docs) { }
+            //output.AppendLine($"-------------Static Class/Struct {id}-----------");
 
             //Currently just distinguishing between static and instance?
             var flags = BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.FlattenHierarchy;
@@ -292,7 +299,7 @@ namespace LuaDocs
 
         private static void HandleStaticFields(Type type, BindingFlags flags)
         {
-            output.AppendLine("-------------------------Fields------------------------------");
+            //output.AppendLine($"-------------------------Fields------------------------------");
             var fields = type.GetFields(flags)
                 //Filter out auto-generated stuff
                 .Where(f => f.GetCustomAttributes(typeof(CompilerGeneratedAttribute), true).Length == 0).ToArray();
@@ -309,7 +316,7 @@ namespace LuaDocs
 
         private static void HandleStaticProperties(Type type, BindingFlags flags)
         {
-            output.AppendLine("-----------------------Properties----------------------------");
+            //output.AppendLine($"-----------------------Properties----------------------------");
             var properties = type.GetProperties(flags)
                 .Where(f => f.GetCustomAttributes(typeof(CompilerGeneratedAttribute), true).Length == 0).ToArray();
             foreach (var property in properties)
@@ -325,7 +332,7 @@ namespace LuaDocs
 
         private static void HandleStaticEvents(Type type)
         {
-            output.AppendLine("------------------------Events------------------------------");
+            //output.AppendLine($"------------------------Events------------------------------");
             var events = type.GetEvents()
                 .Where(x => !x.IsSpecialName); //IsHideBySig?
                                                //.Where(f => f.GetCustomAttributes(typeof(CompilerGeneratedAttribute), true).Length == 0).ToArray();
@@ -339,7 +346,7 @@ namespace LuaDocs
 
         private static void HandleStaticMethods(Type type)
         {
-            output.AppendLine("------------------------Methods------------------------------");
+            //output.AppendLine($"------------------------Methods------------------------------");
             var methods = type.GetMethods()
                 .Where(x => !x.IsSpecialName); //IsHideBySig?
                                                //.Where(f => f.GetCustomAttributes(typeof(CompilerGeneratedAttribute), true).Length == 0).ToArray();
@@ -364,7 +371,10 @@ namespace LuaDocs
 
             var mId = map.FindId(method);
             documentation.TryGetValue(mId, out var mDocs);
-            var mDesc = mDocs is null ? "" : mDocs.Where(x => x.XmlType == XmlType.Summary).FirstOrDefault().Representation;
+            if (mDocs is not null) { 
+                var mDesc = mDocs.Where(x => x.XmlType == XmlType.Summary).FirstOrDefault().Representation; 
+                output.AppendLine($"---{mDesc}");
+            }
 
             foreach (var p in parameters)
             {
@@ -396,6 +406,7 @@ namespace LuaDocs
             //Todo: unsure how to document enum <summary>, maybe @see
             documentation.TryGetValue(id, out var enumDocs);
             var enumSummary = enumDocs is null ? "" : enumDocs.FirstOrDefault().Representation;
+            output.AppendLine($"---{enumSummary}");
 
             //Alias approach
             //output.AppendLine($"---@alias {info.Name}");

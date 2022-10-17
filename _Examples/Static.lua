@@ -1,15 +1,25 @@
 ---@meta
----@type ClassName
-local ClassName = {}
+---@class STClassName
+---@field someString string
+---@field someFunction fun()
+
+---@type STClassName
+SClassName = {}
+--@type function
 ---@param staticArg string Static function argument
----@return bool # Returns true if static function does the needful
-ClassName.StaticMethod = function (staticArg) end
+---@return boolean # Returns true if static function does the needful
+SClassName.staticMethod = function (staticArg) end
 
----@type string String documentation
-ClassName.someString = "<Default/Const Value>"
+--@type string String documentation
+SClassName.someString = "<Default/Const Value>"
 
----@param stringArg string Static parameter documentation
-ClassName.someFunction = function(stringArg) end
+--@type function
+--@param stringArg string Static parameter documentation
+SClassName.someFunction = function(stringArg) end
 
-ClassName.someFunction(ClassName.someString)
+--STClassName.someFunction(STClassName.someString)
+
+---Description of class?
+---@param staticClass STClassName
+SClassName.foo = function(staticClass) end
 
