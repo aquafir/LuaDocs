@@ -332,6 +332,7 @@ namespace LuaDocs
 
         #endregion
 
+        #region Shared
         /// <summary>
         /// Adds ---@field annotation for a field or property
         /// </summary>
@@ -398,7 +399,8 @@ namespace LuaDocs
             //function ClassName:ClassMethod(name) end
             output.AppendLine($"function {type.LuaType()}:{methodName}({parameters.LuaParamNames()}) end");
             output.AppendLine();
-        }
+        } 
+        #endregion
 
         private static void HandleEnum(Type type, MemberInfo info, string id, List<XmlEntry> docs)
         {
