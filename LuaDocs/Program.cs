@@ -1,14 +1,6 @@
 ﻿using FakeProject;
-using HarmonyLib;
-using MonoMod.Utils;
 using NuDoq;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
 using System.Reflection;
-using System.Text;
 
 namespace LuaDocs
 {

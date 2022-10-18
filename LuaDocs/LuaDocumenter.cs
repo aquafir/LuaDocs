@@ -1,19 +1,11 @@
-﻿using FakeProject;
-using HarmonyLib;
-using Mono.Cecil;
-using NuDoq;
+﻿using NuDoq;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
-using System.Security.Cryptography;
-using System.Security.Policy;
 using System.Text;
-using System.Text.RegularExpressions;
-using System.Xml.Linq;
 
 namespace LuaDocs
 {
@@ -94,9 +86,13 @@ namespace LuaDocs
 
             HandleInstanceProperties(type, flags);
 
+            //Another way to handle instance methods but it has drawbacks.  Can't document params/returns, no variadics, some Intellisense uses field icons, etc.
+            HandleInstanceMethodsAsField(type);
+            HandleInstanceEventsAsField(type);
+
             //Create instance and static variable for type
             output.AppendLine($"---@type {type.LuaType()}");            //Instance
-            output.AppendLine($"local _{type.LuaType()} = {{ }}");  
+            //output.AppendLine($"local _{type.LuaType()} = {{ }}");
             output.AppendLine($"{type.LuaType()} = {{ }}");         //Static
             output.AppendLine();
 
@@ -107,6 +103,53 @@ namespace LuaDocs
             //Constructors show up as instance types but the syntax desired is static?
             HandleInstanceConstructors(type);
         }
+
+        #region Instance Methods as Fields
+        private static void HandleInstanceMethodsAsField(Type type)
+        {
+            var methods = type.GetMethods()
+                .Where(x => !x.IsSpecialName); //IsHideBySig?
+                                               //.Where(f => f.GetCustomAttributes(typeof(CompilerGeneratedAttribute), true).Length == 0).ToArray();
+            foreach (var method in methods)
+            {
+                HandleInstanceMethodField(type, method);
+            }
+        }
+
+        private static void HandleInstanceEventsAsField(Type type)
+        {
+            var events = type.GetEvents()
+                .Where(x => !x.IsSpecialName); //IsHideBySig?
+                                               //.Where(f => f.GetCustomAttributes(typeof(CompilerGeneratedAttribute), true).Length == 0).ToArray();
+            foreach (var ev in events)
+            {
+                HandleInstanceMethodField(type, ev.GetAddMethod());
+                HandleInstanceMethodField(type, ev.GetRemoveMethod());
+                HandleInstanceMethodField(type, ev.GetRaiseMethod());
+            }
+        }
+
+        /// <summary>
+        /// Adds documentation for an instance method of a provided type in class as field.
+        /// </summary>
+        private static void HandleInstanceMethodField(Type type, MethodInfo method)
+        {
+            if (type is null || method is null)
+            {
+                Console.WriteLine("Instance method null");
+                return;
+            }
+
+            var parameters = method.GetParameters();
+
+            var mId = map.FindId(method);
+            documentation.TryGetValue(mId, out var mDocs);
+                var mDesc = mDocs is null ? "" : mDocs.Where(x => x.XmlType == XmlType.Summary).FirstOrDefault().Representation;
+
+            output.AppendLine($"---@field {method.Name} {method.LuaFunctionSignature()} {mDesc}");
+        }
+        #endregion
+
 
         private static void HandleInstanceFields(Type type, BindingFlags flags)
         {
@@ -164,7 +207,6 @@ namespace LuaDocs
                 HandleInstanceMethod(type, method);
             }
         }
-
 
         private static void HandleInstanceConstructors(Type type)
         {
@@ -232,7 +274,6 @@ namespace LuaDocs
             }
         }
 
-
         /// <summary>
         /// Adds documentation for an instance method of a provided type.  Used by events, constructors, methods
         /// </summary>
@@ -274,7 +315,8 @@ namespace LuaDocs
 
             var paramNames = parameters.LuaParamNames();
             //function ClassName:ClassMethod(name) end
-            output.AppendLine($"function _{type.LuaType()}:{method.Name}({parameters.LuaParamNames()}) end");
+            //output.AppendLine($"function _{type.LuaType()}:{method.Name}({parameters.LuaParamNames()}) end");
+            output.AppendLine($"function {type.LuaType()}:{method.Name}({parameters.LuaParamNames()}) end");
             output.AppendLine();
         }
         #endregion
@@ -373,8 +415,9 @@ namespace LuaDocs
 
             var mId = map.FindId(method);
             documentation.TryGetValue(mId, out var mDocs);
-            if (mDocs is not null) { 
-                var mDesc = mDocs.Where(x => x.XmlType == XmlType.Summary).FirstOrDefault().Representation; 
+            if (mDocs is not null)
+            {
+                var mDesc = mDocs.Where(x => x.XmlType == XmlType.Summary).FirstOrDefault().Representation;
                 output.AppendLine($"---{mDesc}");
             }
 

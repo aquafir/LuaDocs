@@ -1,13 +1,9 @@
-﻿using HarmonyLib;
-using NuDoq;
-using System;
-using System.CodeDom.Compiler;
-using System.Collections;
+﻿using System;
+using System.CodeDom;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
-using System.Runtime.CompilerServices;
 using System.Text;
 
 namespace LuaDocs
@@ -28,7 +24,9 @@ namespace LuaDocs
             //---@param <name[?]> <type[|type...]> [description]
             $"---@param {p.Name}{(p.IsOptional ? "?" : "")} {p.LuaType()} {paramDesc}";
 
-        //Maps CLR type to what will be used in Lua
+        /// <summary>
+        /// Maps CLR type to what will be used in Lua
+        /// </summary>
         private static Dictionary<string, string> luaTypes = new Dictionary<string, string>() {
             {            "System.Void" , ""},
 {            "MoonSharp.Interpreter.DynValue" , "*"},
@@ -62,8 +60,26 @@ namespace LuaDocs
             };
 
 
+        public static string LuaFunctionSignature(this ParameterInfo[] paramsInfo)
+        {
+            //Todo: if using the Type:Method syntax a "self: LuaType" would be added as a first parameter
+            //Todo: Don't think there is variadic support with functions, but confirm. Using ParameterType.LuaType() to skip check for params
+            return String.Join(",", paramsInfo.Select(p => $"{p.Name}: {p.ParameterType.LuaType()}").ToArray());
+        }
+
+        public static string LuaFunctionSignature(this MethodInfo info)
+        {
+            //fun(PARAM: TYPE): RETURN_TYPE
+            var sb = new StringBuilder("fun(");
+            sb.Append(info.GetParameters().LuaFunctionSignature());
+            sb.Append($"): {info.ReturnParameter.LuaType()}");
+
+            
+            return sb.ToString();
+        }
+
         public static string LuaReturnType(this ConstructorInfo info) =>
-            GetOrAddLuaType(info.GetUnderlyingType().FullName);
+            GetOrAddLuaType(info.DeclaringType.FullName);
 
         public static string LuaReturnType(this MethodInfo info) =>
             GetOrAddLuaType(info.ReturnType.LuaType());
@@ -85,6 +101,7 @@ namespace LuaDocs
         public static string LuaType(this Type type)
         {
             if (type is null)
+                //|| type == typeof(void))
                 return "nil";
 
             //---@type Type[]
