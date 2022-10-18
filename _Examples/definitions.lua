@@ -8,8 +8,10 @@
 ---@field PublicProperty string Public property
 ---@field GetOnlyProperty string Get-only property
 ---@field AutoProperty string Property with auto-generated backing field
-local FakeClass = { }
-_FakeClass = { }
+
+---@type FakeClass
+local f = {}
+--local FakeClass = { }
 
 ---Void method with blank parameter documentation
 ---@param c string Description of parameter c
@@ -23,7 +25,7 @@ function FakeClass:TestMethod(a,b) end
 
 ---@param e FakeEnum 
 ---@return FakeEnum # 
-function FakeClass:TestMethodEnum(e) end
+function f:TestMethodEnum(e) end
 
 ---@param a string 
 ---@param b string 
@@ -63,90 +65,92 @@ function FakeClass:GetHashCode() end
 function FakeClass:GetType() end
 
 ---Empty constructor
+FakeClass = { }
+
 ---@return FakeClass # 
-_FakeClass.new = function() end
+function FakeClass.new() end
 
 ---Constructor with parameters
 ---@param a FakeClass A.  B left empty
 ---@param b string 
 ---@return FakeClass # 
-_FakeClass.new = function(a,b) end
+FakeClass.new = function(a,b) end
 
 ---Overload constructor with params
 ---@param ... number 
 ---@return FakeClass # 
-_FakeClass.new = function(...) end
+FakeClass.new = function(...) end
 
 ---Constructor with a default parameter
 ---@param number number 
 ---@param defaultString? string 
 ---@return FakeClass # 
-_FakeClass.new = function(number,defaultString) end
+FakeClass.new = function(number,defaultString) end
 
 ---@type string Private static field
-_FakeClass._STcustomBackingField = nil
+FakeClass._STcustomBackingField = nil
 ---@type string Public static field
-_FakeClass.STPublicField = nil
+FakeClass.STPublicField = nil
 ---@type string Static readonly field
-_FakeClass.STREADONLY_FIELD = nil
+FakeClass.STREADONLY_FIELD = nil
 ---@type string Constant field
-_FakeClass.STCONST_FIELD = "Constant field"
+FakeClass.STCONST_FIELD = "Constant field"
 ---@type string public static property
-_FakeClass.STPublicProperty = nil
+FakeClass.STPublicProperty = nil
 ---@type string Get-only static property
-_FakeClass.STGetOnlyProperty = nil
+FakeClass.STGetOnlyProperty = nil
 ---@type string Static property with auto-generated backing field
-_FakeClass.STAutoProperty = nil
+FakeClass.STAutoProperty = nil
 ---Void method with blank parameter documentation
 ---@param c string Description of parameter c
-_FakeClass.TestVoid = function(c) end
+FakeClass.TestVoid = function(c) end
 
 ---Adds two strings
 ---@param a string The first string
 ---@param b? string Second string
 ---@return string # Concatenation of two strings
-_FakeClass.TestMethod = function(a,b) end
+FakeClass.TestMethod = function(a,b) end
 
 ---@param e FakeEnum 
 ---@return FakeEnum # 
-_FakeClass.TestMethodEnum = function(e) end
+FakeClass.TestMethodEnum = function(e) end
 
 ---@param a string 
 ---@param b string 
 ---@return string # 
-_FakeClass.TestAbstract = function(a,b) end
+FakeClass.TestAbstract = function(a,b) end
 
-_FakeClass.InterfaceMethod = function() end
+FakeClass.InterfaceMethod = function() end
 
 ---Static void method with blank parameter documentation
 ---@param c string Description of parameter c
-_FakeClass.STTestVoid = function(c) end
+FakeClass.STTestVoid = function(c) end
 
 ---Adds two strings
 ---@param a string The first string
 ---@param b? string Second string
 ---@return string # Concatenation of two strings
-_FakeClass.STTestMethod = function(a,b) end
+FakeClass.STTestMethod = function(a,b) end
 
 ---@param e FakeEnum 
 ---@return FakeEnum # 
-_FakeClass.STTestMethodEnum = function(e) end
+FakeClass.STTestMethodEnum = function(e) end
 
 ---@return string # 
-_FakeClass.Virtual = function() end
+FakeClass.Virtual = function() end
 
 ---@return string # 
-_FakeClass.ToString = function() end
+FakeClass.ToString = function() end
 
 ---@param obj userdata 
 ---@return boolean # 
-_FakeClass.Equals = function(obj) end
+FakeClass.Equals = function(obj) end
 
 ---@return number # 
-_FakeClass.GetHashCode = function() end
+FakeClass.GetHashCode = function() end
 
 ---@return userdata # 
-_FakeClass.GetType = function() end
+FakeClass.GetType = function() end
 
 ----Enum----T:FakeProject.NonNestedEnum
 ---Enum outside of class

@@ -13,11 +13,14 @@ then
     local solution = "Possibly just finding a good prefix for static classes?"
 end
 
----@type ClassName
-local classInstance
-classInstance:ClassMethod("test")
-local name = classInstance.memberName
+-- ---@type ClassName
+-- local classInstance
+-- classInstance:ClassMethod("test")
+-- local name = classInstance.memberName
 -- ClassName.someField = 
+local cInst = ClassName.new()
+ClassName.toNumber(cInst.memberName .. ClassName.staticString)
+
 
 --@type STClassName
 --local thing = {}
@@ -41,6 +44,7 @@ local fake
 -- local defFieldTest = defConstTest.GetOnlyProperty .. defConstTest.AutoProperty
 -- local defStaticTest = FakeClass.STCONST_FIELD .. FakeClass.STAutoProperty
 
-local defConstTest = _FakeClass.new(1, 2, 3)
-local staticFailsByAcessingInstance = _FakeClass.STAutoProperty
-defConstTest:TestMethodEnum(FakeEnum.A)
+local defConstTest = FakeClass.new(1, 2, 3)
+local staticFailsByAcessingInstance = FakeClass.STAutoProperty
+
+

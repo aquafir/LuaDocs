@@ -46,8 +46,19 @@ Reflection with desired [binding flags](https://learn.microsoft.com/en-us/dotnet
     * Add instance methods for `TypeName:methodName(params)`
     * Add instance event methods for `Type:add`, `Type:remove`
       * (and `Type:handle/raise?`?)
-  * Create an untyped global variable with the same name as the @class for static members
-    * ***Might need to be reworked.  Could be created in a non @meta file?  Done through fields?***
+  * Handle statics
+    * First option is separating files where static declarations are made.  
+      * Probably best option but needs testing.
+      * `Static.lua` does this with `ClassName` 
+      * Use `:` notation for instances, `.` for static
+      * Can't just move the static variable declaration below anything with instance.
+    * Second option is some convention for changing the name of the static class
+      * Type `SomeTime` accessed like `_SomeType.new()`
+    * Third option is adding `fun()` fields.  Probably the worst
+      * Lets you only declare the static variable since everything else is coming from the @class
+      * Unable to document parameters/returns
+      * Don't think it can support variadics (outside of treating them as arrays)
+      * Uses the same icon as other fields
     * Add fields/properties with @type annotations
       * Try to set defaults.  ***Definitely need to think more about this***.
         * Convert value to string value that would be used in Lua declaration
