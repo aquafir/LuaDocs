@@ -33,11 +33,14 @@ fieldTest.withParams("test", 1)
 
 --Test of the FakeProject definitions
 local defEnumTest = FakeEnum.A
+---@type FakeClass
+local fake
 -- local defConstTest = FakeClass:new("param") -- Other style
-local defConstTest = FakeClass.new(FakeClass.new(), "test")
-local defConstVariadic = FakeClass.new(1, 2, 3, 4) 
-local defFieldTest = defConstTest.GetOnlyProperty .. defConstTest.AutoProperty
-local defStaticTest = FakeClass.STCONST_FIELD .. FakeClass.STAutoProperty
+-- local defConstTest = FakeClass.new(FakeClass.new(), "test")
+-- local defConstVariadic = FakeClass.new(1, 2, 3, 4) 
+-- local defFieldTest = defConstTest.GetOnlyProperty .. defConstTest.AutoProperty
+-- local defStaticTest = FakeClass.STCONST_FIELD .. FakeClass.STAutoProperty
 
-local staticFailsByAcessingInstance = FakeClass.AutoProperty
-defConstTest.TestMethodEnum(FakeEnum.A)
+local defConstTest = _FakeClass.new(1, 2, 3)
+local staticFailsByAcessingInstance = _FakeClass.STAutoProperty
+defConstTest:TestMethodEnum(FakeEnum.A)

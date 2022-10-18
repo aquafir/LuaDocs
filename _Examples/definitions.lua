@@ -8,21 +8,8 @@
 ---@field PublicProperty string Public property
 ---@field GetOnlyProperty string Get-only property
 ---@field AutoProperty string Property with auto-generated backing field
----@field TestVoid fun(c: string):  Void method with blank parameter documentation
----@field TestMethod fun(a: string,b: string): string Adds two strings
----@field TestMethodEnum fun(e: FakeEnum): FakeEnum 
----@field TestAbstract fun(a: string,b: string): string 
----@field InterfaceMethod fun():  
----@field STTestVoid fun(c: string):  Static void method with blank parameter documentation
----@field STTestMethod fun(a: string,b: string): string Adds two strings
----@field STTestMethodEnum fun(e: FakeEnum): FakeEnum 
----@field Virtual fun(): string 
----@field ToString fun(): string 
----@field Equals fun(obj: userdata): boolean 
----@field GetHashCode fun(): number 
----@field GetType fun(): userdata 
----@type FakeClass
-FakeClass = { }
+local FakeClass = { }
+_FakeClass = { }
 
 ---Void method with blank parameter documentation
 ---@param c string Description of parameter c
@@ -77,89 +64,89 @@ function FakeClass:GetType() end
 
 ---Empty constructor
 ---@return FakeClass # 
-FakeClass.new = function() end
+_FakeClass.new = function() end
 
 ---Constructor with parameters
 ---@param a FakeClass A.  B left empty
 ---@param b string 
 ---@return FakeClass # 
-FakeClass.new = function(a,b) end
+_FakeClass.new = function(a,b) end
 
 ---Overload constructor with params
 ---@param ... number 
 ---@return FakeClass # 
-FakeClass.new = function(...) end
+_FakeClass.new = function(...) end
 
 ---Constructor with a default parameter
 ---@param number number 
 ---@param defaultString? string 
 ---@return FakeClass # 
-FakeClass.new = function(number,defaultString) end
+_FakeClass.new = function(number,defaultString) end
 
 ---@type string Private static field
-FakeClass._STcustomBackingField = nil
+_FakeClass._STcustomBackingField = nil
 ---@type string Public static field
-FakeClass.STPublicField = nil
+_FakeClass.STPublicField = nil
 ---@type string Static readonly field
-FakeClass.STREADONLY_FIELD = nil
+_FakeClass.STREADONLY_FIELD = nil
 ---@type string Constant field
-FakeClass.STCONST_FIELD = "Constant field"
+_FakeClass.STCONST_FIELD = "Constant field"
 ---@type string public static property
-FakeClass.STPublicProperty = nil
+_FakeClass.STPublicProperty = nil
 ---@type string Get-only static property
-FakeClass.STGetOnlyProperty = nil
+_FakeClass.STGetOnlyProperty = nil
 ---@type string Static property with auto-generated backing field
-FakeClass.STAutoProperty = nil
+_FakeClass.STAutoProperty = nil
 ---Void method with blank parameter documentation
 ---@param c string Description of parameter c
-FakeClass.TestVoid = function(c) end
+_FakeClass.TestVoid = function(c) end
 
 ---Adds two strings
 ---@param a string The first string
 ---@param b? string Second string
 ---@return string # Concatenation of two strings
-FakeClass.TestMethod = function(a,b) end
+_FakeClass.TestMethod = function(a,b) end
 
 ---@param e FakeEnum 
 ---@return FakeEnum # 
-FakeClass.TestMethodEnum = function(e) end
+_FakeClass.TestMethodEnum = function(e) end
 
 ---@param a string 
 ---@param b string 
 ---@return string # 
-FakeClass.TestAbstract = function(a,b) end
+_FakeClass.TestAbstract = function(a,b) end
 
-FakeClass.InterfaceMethod = function() end
+_FakeClass.InterfaceMethod = function() end
 
 ---Static void method with blank parameter documentation
 ---@param c string Description of parameter c
-FakeClass.STTestVoid = function(c) end
+_FakeClass.STTestVoid = function(c) end
 
 ---Adds two strings
 ---@param a string The first string
 ---@param b? string Second string
 ---@return string # Concatenation of two strings
-FakeClass.STTestMethod = function(a,b) end
+_FakeClass.STTestMethod = function(a,b) end
 
 ---@param e FakeEnum 
 ---@return FakeEnum # 
-FakeClass.STTestMethodEnum = function(e) end
+_FakeClass.STTestMethodEnum = function(e) end
 
 ---@return string # 
-FakeClass.Virtual = function() end
+_FakeClass.Virtual = function() end
 
 ---@return string # 
-FakeClass.ToString = function() end
+_FakeClass.ToString = function() end
 
 ---@param obj userdata 
 ---@return boolean # 
-FakeClass.Equals = function(obj) end
+_FakeClass.Equals = function(obj) end
 
 ---@return number # 
-FakeClass.GetHashCode = function() end
+_FakeClass.GetHashCode = function() end
 
 ---@return userdata # 
-FakeClass.GetType = function() end
+_FakeClass.GetType = function() end
 
 ----Enum----T:FakeProject.NonNestedEnum
 ---Enum outside of class
@@ -172,13 +159,8 @@ NonNestedEnum = { -- Enum outside of class
 ---
 ---@class FakeEvent
 ---@field Text string Text of event
----@field AddEvent fun():  
----@field ToString fun(): string 
----@field Equals fun(obj: userdata): boolean 
----@field GetHashCode fun(): number 
----@field GetType fun(): userdata 
----@type FakeEvent
-FakeEvent = { }
+local FakeEvent = { }
+_FakeEvent = { }
 
 function FakeEvent:AddEvent() end
 
@@ -198,33 +180,29 @@ function FakeEvent:GetType() end
 ---Constructor of fake event
 ---@param text string Text passed along on raised event
 ---@return FakeEvent # 
-FakeEvent.new = function(text) end
+_FakeEvent.new = function(text) end
 
-FakeEvent.AddEvent = function() end
+_FakeEvent.AddEvent = function() end
 
 ---@return string # 
-FakeEvent.ToString = function() end
+_FakeEvent.ToString = function() end
 
 ---@param obj userdata 
 ---@return boolean # 
-FakeEvent.Equals = function(obj) end
+_FakeEvent.Equals = function(obj) end
 
 ---@return number # 
-FakeEvent.GetHashCode = function() end
+_FakeEvent.GetHashCode = function() end
 
 ---@return userdata # 
-FakeEvent.GetType = function() end
+_FakeEvent.GetType = function() end
 
 ---Structure for coordinates
 ---@class Coords
 ---@field X number X coord
 ---@field Y number 
----@field ToString fun(): string ToString override for coordinates
----@field Equals fun(obj: userdata): boolean 
----@field GetHashCode fun(): number 
----@field GetType fun(): userdata 
----@type Coords
-Coords = { }
+local Coords = { }
+_Coords = { }
 
 ---ToString override for coordinates
 ---@return string # Formatted coordinates
@@ -244,32 +222,26 @@ function Coords:GetType() end
 ---@param x number X coord
 ---@param y number Y coord
 ---@return Coords # 
-Coords.new = function(x,y) end
+_Coords.new = function(x,y) end
 
 ---ToString override for coordinates
 ---@return string # Formatted coordinates
-Coords.ToString = function() end
+_Coords.ToString = function() end
 
 ---@param obj userdata 
 ---@return boolean # 
-Coords.Equals = function(obj) end
+_Coords.Equals = function(obj) end
 
 ---@return number # 
-Coords.GetHashCode = function() end
+_Coords.GetHashCode = function() end
 
 ---@return userdata # 
-Coords.GetType = function() end
+_Coords.GetType = function() end
 
 ---
 ---@class IAbstract
----@field Virtual fun(): string 
----@field TestAbstract fun(a: string,b: string): string 
----@field ToString fun(): string 
----@field Equals fun(obj: userdata): boolean 
----@field GetHashCode fun(): number 
----@field GetType fun(): userdata 
----@type IAbstract
-IAbstract = { }
+local IAbstract = { }
+_IAbstract = { }
 
 ---@return string # 
 function IAbstract:Virtual() end
@@ -293,47 +265,41 @@ function IAbstract:GetHashCode() end
 function IAbstract:GetType() end
 
 ---@return string # 
-IAbstract.Virtual = function() end
+_IAbstract.Virtual = function() end
 
 ---@param a string 
 ---@param b string 
 ---@return string # 
-IAbstract.TestAbstract = function(a,b) end
+_IAbstract.TestAbstract = function(a,b) end
 
 ---@return string # 
-IAbstract.ToString = function() end
+_IAbstract.ToString = function() end
 
 ---@param obj userdata 
 ---@return boolean # 
-IAbstract.Equals = function(obj) end
+_IAbstract.Equals = function(obj) end
 
 ---@return number # 
-IAbstract.GetHashCode = function() end
+_IAbstract.GetHashCode = function() end
 
 ---@return userdata # 
-IAbstract.GetType = function() end
+_IAbstract.GetType = function() end
 
 ---
 ---@class IInterface
----@field InterfaceMethod fun():  
----@type IInterface
-IInterface = { }
+local IInterface = { }
+_IInterface = { }
 
 function IInterface:InterfaceMethod() end
 
-IInterface.InterfaceMethod = function() end
+_IInterface.InterfaceMethod = function() end
 
 ---
 ---@class UndocumentedClass
 ---@field Field string 
 ---@field Property string 
----@field Method fun(Param: string,VariadicParams: number[]): FakeClass 
----@field ToString fun(): string 
----@field Equals fun(obj: userdata): boolean 
----@field GetHashCode fun(): number 
----@field GetType fun(): userdata 
----@type UndocumentedClass
-UndocumentedClass = { }
+local UndocumentedClass = { }
+_UndocumentedClass = { }
 
 ---@param Param string 
 ---@param ... number 
@@ -354,35 +320,31 @@ function UndocumentedClass:GetHashCode() end
 function UndocumentedClass:GetType() end
 
 ---@return UndocumentedClass # 
-UndocumentedClass.new = function() end
+_UndocumentedClass.new = function() end
 
 ---@param Param string 
 ---@param ... number 
 ---@return FakeClass # 
-UndocumentedClass.Method = function(Param,...) end
+_UndocumentedClass.Method = function(Param,...) end
 
 ---@return string # 
-UndocumentedClass.ToString = function() end
+_UndocumentedClass.ToString = function() end
 
 ---@param obj userdata 
 ---@return boolean # 
-UndocumentedClass.Equals = function(obj) end
+_UndocumentedClass.Equals = function(obj) end
 
 ---@return number # 
-UndocumentedClass.GetHashCode = function() end
+_UndocumentedClass.GetHashCode = function() end
 
 ---@return userdata # 
-UndocumentedClass.GetType = function() end
+_UndocumentedClass.GetType = function() end
 
 ---Nested class
 ---@class NestedClass
 ---@field _fakeClass FakeClass Nested class private field
----@field ToString fun(): string 
----@field Equals fun(obj: userdata): boolean 
----@field GetHashCode fun(): number 
----@field GetType fun(): userdata 
----@type NestedClass
-NestedClass = { }
+local NestedClass = { }
+_NestedClass = { }
 
 ---@return string # 
 function NestedClass:ToString() end
@@ -401,20 +363,20 @@ function NestedClass:GetType() end
 ---@param s string S
 ---@param fc? FakeClass Accepts fake class
 ---@return NestedClass # 
-NestedClass.new = function(s,fc) end
+_NestedClass.new = function(s,fc) end
 
 ---@return string # 
-NestedClass.ToString = function() end
+_NestedClass.ToString = function() end
 
 ---@param obj userdata 
 ---@return boolean # 
-NestedClass.Equals = function(obj) end
+_NestedClass.Equals = function(obj) end
 
 ---@return number # 
-NestedClass.GetHashCode = function() end
+_NestedClass.GetHashCode = function() end
 
 ---@return userdata # 
-NestedClass.GetType = function() end
+_NestedClass.GetType = function() end
 
 ----Enum----T:FakeProject.FakeClass.FakeEnum
 ---Fake enum desc
@@ -440,14 +402,8 @@ EnumFlag = { -- Enum with flags attribute
 }
 ---Published of fake events
 ---@class FakeEventPublisher
----@field ToString fun(): string 
----@field Equals fun(obj: userdata): boolean 
----@field GetHashCode fun(): number 
----@field GetType fun(): userdata 
----@field add_FakeEvent fun(value: FakeEventHandler):  
----@field remove_FakeEvent fun(value: FakeEventHandler):  
----@type FakeEventPublisher
-FakeEventPublisher = { }
+local FakeEventPublisher = { }
+_FakeEventPublisher = { }
 
 ---@return string # 
 function FakeEventPublisher:ToString() end
@@ -469,20 +425,20 @@ function FakeEventPublisher:add_FakeEvent(value) end
 function FakeEventPublisher:remove_FakeEvent(value) end
 
 ---@return FakeEventPublisher # 
-FakeEventPublisher.new = function() end
+_FakeEventPublisher.new = function() end
 
 ---@return string # 
-FakeEventPublisher.ToString = function() end
+_FakeEventPublisher.ToString = function() end
 
 ---@param obj userdata 
 ---@return boolean # 
-FakeEventPublisher.Equals = function(obj) end
+_FakeEventPublisher.Equals = function(obj) end
 
 ---@return number # 
-FakeEventPublisher.GetHashCode = function() end
+_FakeEventPublisher.GetHashCode = function() end
 
 ---@return userdata # 
-FakeEventPublisher.GetType = function() end
+_FakeEventPublisher.GetType = function() end
 
 ---Some fake event handler
 ---@class FakeEventHandler
@@ -492,19 +448,8 @@ FakeEventPublisher.GetType = function() end
 ---@field _methodPtrAux IntPtr 
 ---@field Method function 
 ---@field Target userdata 
----@field Invoke fun(sender: userdata,e: FakeEvent):  
----@field BeginInvoke fun(sender: userdata,e: FakeEvent,callback: AsyncCallback,object: userdata): IAsyncResult 
----@field EndInvoke fun(result: IAsyncResult):  
----@field GetObjectData fun(info: SerializationInfo,context: StreamingContext):  
----@field Equals fun(obj: userdata): boolean 
----@field GetInvocationList fun(): function[] 
----@field GetHashCode fun(): number 
----@field DynamicInvoke fun(args: userdata[]): userdata 
----@field Clone fun(): userdata 
----@field ToString fun(): string 
----@field GetType fun(): userdata 
----@type FakeEventHandler
-FakeEventHandler = { }
+local FakeEventHandler = { }
+_FakeEventHandler = { }
 
 ---@param sender userdata 
 ---@param e FakeEvent 
@@ -550,46 +495,46 @@ function FakeEventHandler:GetType() end
 ---@param object userdata 
 ---@param method IntPtr 
 ---@return FakeEventHandler # 
-FakeEventHandler.new = function(object,method) end
+_FakeEventHandler.new = function(object,method) end
 
 ---@param sender userdata 
 ---@param e FakeEvent 
-FakeEventHandler.Invoke = function(sender,e) end
+_FakeEventHandler.Invoke = function(sender,e) end
 
 ---@param sender userdata 
 ---@param e FakeEvent 
 ---@param callback AsyncCallback 
 ---@param object userdata 
 ---@return IAsyncResult # 
-FakeEventHandler.BeginInvoke = function(sender,e,callback,object) end
+_FakeEventHandler.BeginInvoke = function(sender,e,callback,object) end
 
 ---@param result IAsyncResult 
-FakeEventHandler.EndInvoke = function(result) end
+_FakeEventHandler.EndInvoke = function(result) end
 
 ---@param info SerializationInfo 
 ---@param context StreamingContext 
-FakeEventHandler.GetObjectData = function(info,context) end
+_FakeEventHandler.GetObjectData = function(info,context) end
 
 ---@param obj userdata 
 ---@return boolean # 
-FakeEventHandler.Equals = function(obj) end
+_FakeEventHandler.Equals = function(obj) end
 
 ---@return function[] # 
-FakeEventHandler.GetInvocationList = function() end
+_FakeEventHandler.GetInvocationList = function() end
 
 ---@return number # 
-FakeEventHandler.GetHashCode = function() end
+_FakeEventHandler.GetHashCode = function() end
 
 ---@param ... userdata 
 ---@return userdata # 
-FakeEventHandler.DynamicInvoke = function(...) end
+_FakeEventHandler.DynamicInvoke = function(...) end
 
 ---@return userdata # 
-FakeEventHandler.Clone = function() end
+_FakeEventHandler.Clone = function() end
 
 ---@return string # 
-FakeEventHandler.ToString = function() end
+_FakeEventHandler.ToString = function() end
 
 ---@return userdata # 
-FakeEventHandler.GetType = function() end
+_FakeEventHandler.GetType = function() end
 

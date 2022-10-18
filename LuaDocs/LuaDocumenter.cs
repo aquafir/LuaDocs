@@ -87,13 +87,14 @@ namespace LuaDocs
             HandleInstanceProperties(type, flags);
 
             //Another way to handle instance methods but it has drawbacks.  Can't document params/returns, no variadics, some Intellisense uses field icons, etc.
-            HandleInstanceMethodsAsField(type);
-            HandleInstanceEventsAsField(type);
+            //HandleInstanceMethodsAsField(type);
+            //HandleInstanceEventsAsField(type);
 
-            //Create instance and static variable for type
-            output.AppendLine($"---@type {type.LuaType()}");            //Instance
+            //Create instance and static variable for type?
+            output.AppendLine($"local {type.LuaType()} = {{ }}");       //Instance
             //output.AppendLine($"local _{type.LuaType()} = {{ }}");
-            output.AppendLine($"{type.LuaType()} = {{ }}");         //Static
+            //output.AppendLine($"{type.LuaType()} = {{ }}");           //Static
+            output.AppendLine($"_{type.LuaType()} = {{ }}");         
             output.AppendLine();
 
             HandleInstanceMethods(type);
@@ -245,7 +246,8 @@ namespace LuaDocs
 
                 var paramNames = parameters.LuaParamNames();
                 //TypeName.FunctionName = function(params) end
-                output.AppendLine($"{type.LuaType()}.new = function({parameters.LuaParamNames()}) end");
+                //output.AppendLine($"{type.LuaType()}.new = function({parameters.LuaParamNames()}) end");
+                output.AppendLine($"_{type.LuaType()}.new = function({parameters.LuaParamNames()}) end");
                 output.AppendLine();
 
                 //var parameters = method.GetParameters();
@@ -354,7 +356,8 @@ namespace LuaDocs
                 var fDesc = fDocs is null ? "" : fDocs.FirstOrDefault().Representation;
 
                 output.AppendLine($"---@type {field.LuaType()} {fDesc}");
-                output.AppendLine($"{type.LuaType()}.{field.Name} = {field.LuaDefault()}");
+                //output.AppendLine($"{type.LuaType()}.{field.Name} = {field.LuaDefault()}");
+                output.AppendLine($"_{type.LuaType()}.{field.Name} = {field.LuaDefault()}");
             }
         }
 
@@ -370,7 +373,8 @@ namespace LuaDocs
                 var pDesc = pDocs is null ? "" : pDocs.FirstOrDefault().Representation;
 
                 output.AppendLine($"---@type {property.LuaType()} {pDesc}");
-                output.AppendLine($"{type.LuaType()}.{property.Name} = {property.LuaDefault()}");
+                //output.AppendLine($"{type.LuaType()}.{property.Name} = {property.LuaDefault()}");
+                output.AppendLine($"_{type.LuaType()}.{property.Name} = {property.LuaDefault()}");
             }
         }
 
@@ -438,7 +442,8 @@ namespace LuaDocs
 
             var paramNames = parameters.LuaParamNames();
             //TypeName.FunctionName = function(params) end
-            output.AppendLine($"{type.LuaType()}.{method.Name} = function({parameters.LuaParamNames()}) end");
+            //output.AppendLine($"{type.LuaType()}.{method.Name} = function({parameters.LuaParamNames()}) end");
+            output.AppendLine($"_{type.LuaType()}.{method.Name} = function({parameters.LuaParamNames()}) end");
             output.AppendLine();
         }
         #endregion
