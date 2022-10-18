@@ -41,16 +41,17 @@ Reflection with desired [binding flags](https://learn.microsoft.com/en-us/dotnet
   * Types are abbreviate to whatever is after the last `.` in their full name
   * Nested stuff uses whatever is after the last `+`.  *Probably should think more about this*
 * Create [@class](#@class) with relevant [@fields](#@fields) for class/struct
-  * Add constructors for `TypeName:new(params)`
-  * Add instance methods for `TypeName:methodName(params)`
-  * Add instance event methods for `Type:add`, `Type:remove`
-    *  (and `Type:handle/raise?`?)
-  * Create a [@type](#@type) with the same name as the @class for static members
-    * ***Think this needs to be reworked.  Could be created in a non @meta file?  Adjust naming?***
+  * Create a local instance of the @class [@type](#@type) with a prefix (`_TypeName`) to keep the name separate from the global static type
+    * Add constructors for `TypeName:new(params)`
+    * Add instance methods for `TypeName:methodName(params)`
+    * Add instance event methods for `Type:add`, `Type:remove`
+      * (and `Type:handle/raise?`?)
+  * Create an untyped global variable with the same name as the @class for static members
+    * ***Might need to be reworked.  Could be created in a non @meta file?  Done through fields?***
     * Add fields/properties with @type annotations
       * Try to set defaults.  ***Definitely need to think more about this***.
         * Convert value to string value that would be used in Lua declaration
-    * Add static methods similar to instance methods, but on the created class Type
+    * Add static methods similar to instance methods
 * Write out to `_Examples/definitions.lua`
 
 

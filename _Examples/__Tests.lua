@@ -1,22 +1,21 @@
---@module "Constructor"
 ---@module "definitions"
 ---@module "Static"
 
---Adding constructor to static object named after type
-local staticTest = SomeClass:new()
-local field = staticTest.someField
+--Statics
+---@type STClassName
+local instance
+local copy = instance.instanceFunction()
+copy.instanceString = instance.instanceString .. "(copy)"
 
---Adding constructor as class field function
---Still requires a global "static" object with the name of the static type it represents
-local funcTest = SomeClass.new("string for diff signature")
-local funcField = funcTest.new("test")
+if(STClassName.staticMethod(STClassName.staticString))
+then
+    local solution = "Possibly just finding a good prefix for static classes?"
+end
 
+--Test of the FakeProject definitions
 local defEnumTest = FakeEnum.A
 -- local defConstTest = FakeClass:new("param") -- Other style
 local defConstTest = FakeClass.new(FakeClass.new(), "test")
-local defConstTest2 = FakeClass.new(1, "default")
-local defTestVariadic = FakeClass.new(1, 2, 3, 4) 
-local defFieldTest = defConstTest.GetOnlyProperty
--- local defStaticTest = FakeClass.READONLY_FIELD   -- Not working
-
-local test = FakeClass.new(FakeClass.new(), "this")
+local defConstVariadic = FakeClass.new(1, 2, 3, 4) 
+local defFieldTest = defConstTest.GetOnlyProperty .. defConstTest.AutoProperty
+local defStaticTest = FakeClass.STCONST_FIELD .. FakeClass.STAutoProperty

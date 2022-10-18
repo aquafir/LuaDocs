@@ -94,9 +94,11 @@ namespace LuaDocs
 
             HandleInstanceProperties(type, flags);
 
-            //Create static instance for type
-            output.AppendLine($"---@type {type.LuaType()}\r\n{type.LuaType()} = {{ }}\r\n");
-            //output.AppendLine($"local {type.LuaType()} = {{ }}\r\n");
+            //Create instance and static variable for type
+            output.AppendLine($"---@type {type.LuaType()}");            //Instance
+            output.AppendLine($"local _{type.LuaType()} = {{ }}");  
+            output.AppendLine($"{type.LuaType()} = {{ }}");         //Static
+            output.AppendLine();
 
             HandleInstanceMethods(type);
 
@@ -272,7 +274,7 @@ namespace LuaDocs
 
             var paramNames = parameters.LuaParamNames();
             //function ClassName:ClassMethod(name) end
-            output.AppendLine($"function {type.LuaType()}:{method.Name}({parameters.LuaParamNames()}) end");
+            output.AppendLine($"function _{type.LuaType()}:{method.Name}({parameters.LuaParamNames()}) end");
             output.AppendLine();
         }
         #endregion
