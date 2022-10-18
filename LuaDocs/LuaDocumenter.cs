@@ -15,7 +15,8 @@ namespace LuaDocs
         static MemberIdMap map = new();
         static IEnumerable<Type> types;
         static StringBuilder output = new();
-
+        static Dictionary<Type, string> staticAnnotations = new();
+        static Dictionary<Type, string> instanceAnnotations = new();
 
         public static void Document(Dictionary<string, List<XmlEntry>> documentation, MemberIdMap map, Assembly assembly)
         {
@@ -29,7 +30,9 @@ namespace LuaDocs
 
             //Write to _Examples definitions dir
             var path = Path.Combine(Directory.GetCurrentDirectory(), @"..\..\..\_Examples");
-            File.WriteAllText(Path.Combine(path, "definitions.lua"), output.ToString());
+            //File.WriteAllText(Path.Combine(path, "definitions.lua"), output.ToString());
+            File.WriteAllText(Path.Combine(path, "instance-definitions.lua"), String.Join(Environment.NewLine, instanceAnnotations.Values.ToArray()));
+            File.WriteAllText(Path.Combine(path, "static-definitions.lua"), String.Join(Environment.NewLine, staticAnnotations.Values.ToArray()));
 
             //Write to build dir
             //if (!Directory.Exists("definitions"))
@@ -45,7 +48,7 @@ namespace LuaDocs
             foreach (var type in types)
             {
                 //Todo: think about what to exclude
-                if (type.Name.Contains("<>"))
+                if (FilterType(type))
                     continue;
 
                 var info = type as MemberInfo;
@@ -56,14 +59,26 @@ namespace LuaDocs
 
                 if (type.IsEnum)
                 {
+                    output = new();
                     HandleEnum(type, info, id, docs);
+                    instanceAnnotations.Add(type, output.ToString());
                 }
                 else
                 {
+                    output = new();
                     HandleInstanceType(type, info, id, docs);
+                    instanceAnnotations.Add(type, output.ToString());
+
+                    output = new();
                     HandleStaticType(type, info, id, docs);
+                    staticAnnotations.Add(type, output.ToString());
                 }
             }
+        }
+
+        private static bool FilterType(Type type)
+        {
+            return type.Name.Contains("<>");
         }
 
         #region Instance
@@ -83,26 +98,18 @@ namespace LuaDocs
             output.AppendLine($"---@class {type.LuaType()}");
 
             HandleInstanceFields(type, flags);
-
             HandleInstanceProperties(type, flags);
 
             //Another way to handle instance methods but it has drawbacks.  Can't document params/returns, no variadics, some Intellisense uses field icons, etc.
             //HandleInstanceMethodsAsField(type);
             //HandleInstanceEventsAsField(type);
 
-            //Create instance and static variable for type?
-            output.AppendLine($"local {type.LuaType()} = {{ }}");       //Instance
-            //output.AppendLine($"local _{type.LuaType()} = {{ }}");
-            //output.AppendLine($"{type.LuaType()} = {{ }}");           //Static
-            output.AppendLine($"_{type.LuaType()} = {{ }}");         
+            //Create local instance for methods
+            output.AppendLine($"local {type.LuaType()} = {{}}");       //Instance
             output.AppendLine();
 
             HandleInstanceMethods(type);
-
             HandleInstanceEvents(type);
-
-            //Constructors show up as instance types but the syntax desired is static?
-            HandleInstanceConstructors(type);
         }
 
         #region Instance Methods as Fields
@@ -160,11 +167,7 @@ namespace LuaDocs
                 .Where(f => f.GetCustomAttributes(typeof(CompilerGeneratedAttribute), true).Length == 0).ToArray();
             foreach (var field in fields)
             {
-                var fId = map.FindId(field);
-                documentation.TryGetValue(fId, out var fDocs);
-                var fDesc = fDocs is null ? "" : fDocs.FirstOrDefault().Representation;
-
-                output.AppendLine($"---@field {field.Name} {field.LuaType()} {fDesc}");
+                HandleFieldAnnotation(field);
             }
         }
 
@@ -209,73 +212,6 @@ namespace LuaDocs
             }
         }
 
-        private static void HandleInstanceConstructors(Type type)
-        {
-            //output.AppendLine($"---------------------Constructors----------------------------");
-            //trevis: Side note, I also changed constructor syntax to MyClass.new() instead of MyClass.__new()…
-            var constructors = type.GetConstructors();
-            foreach (var method in constructors)
-            {
-                if (type is null || method is null)
-                {
-                    Console.WriteLine("Static method null");
-                    return;
-                }
-
-                var parameters = method.GetParameters();
-
-                var mId = map.FindId(method);
-                documentation.TryGetValue(mId, out var mDocs);
-                if (mDocs is not null)
-                {
-                    var mDesc = mDocs.Where(x => x.XmlType == XmlType.Summary).FirstOrDefault().Representation;
-                    output.AppendLine($"---{mDesc}");
-                }
-
-                foreach (var p in parameters)
-                {
-                    var paramDesc = mDocs is null ? "" : mDocs.Where(x => x.XmlType == XmlType.Param && x.Name == p.Name).FirstOrDefault().Representation;
-
-                    output.AppendLine(p.LuaParamAnnotation(paramDesc));
-                }
-
-                var rDesc = mDocs is null ? "" : mDocs.Where(x => x.XmlType == XmlType.Returns).FirstOrDefault().Representation;
-
-                //---@return <type> [<name> [comment] | [name] #<comment>]
-                output.AppendLine($"---@return {type.LuaType()} # {rDesc}");
-
-                var paramNames = parameters.LuaParamNames();
-                //TypeName.FunctionName = function(params) end
-                //output.AppendLine($"{type.LuaType()}.new = function({parameters.LuaParamNames()}) end");
-                output.AppendLine($"_{type.LuaType()}.new = function({parameters.LuaParamNames()}) end");
-                output.AppendLine();
-
-                //var parameters = method.GetParameters();
-
-                //var pId = map.FindId(method);
-                //documentation.TryGetValue(pId, out var pDocs);
-                //var pDesc = pDocs is null ? "" : pDocs.Where(x => x.XmlType == XmlType.Summary).FirstOrDefault().Representation;
-                ////var pDescs = mDocs is null ? new List<XmlEntry>() : mDocs.Where(x => x.XmlType == XmlType.Param);
-
-                //foreach (var p in parameters)
-                //{
-                //    var paramDesc = pDocs is null ? "" : pDocs.Where(x => x.XmlType == XmlType.Param && x.Name == p.Name).FirstOrDefault().Representation;
-
-                //output.AppendLine(p.LuaParamAnnotation(paramDesc));
-                //}
-
-                //var rDesc = pDocs is null ? "" : pDocs.Where(x => x.XmlType == XmlType.Returns).FirstOrDefault().Representation;
-
-                ////---@return <type> [<name> [comment] | [name] #<comment>]
-                //output.AppendLine($"---@return {type.LuaType()} # {rDesc}");
-
-                //var paramNames = parameters.LuaParamNames();
-                ////function ClassName:new(params) end
-                //output.AppendLine($"function {type.LuaType()}:new({parameters.LuaParamNames()}) end");
-                //output.AppendLine();
-            }
-        }
-
         /// <summary>
         /// Adds documentation for an instance method of a provided type.  Used by events, constructors, methods
         /// </summary>
@@ -289,37 +225,7 @@ namespace LuaDocs
                 return;
             }
 
-            var parameters = method.GetParameters();
-
-            var mId = map.FindId(method);
-            documentation.TryGetValue(mId, out var mDocs);
-            if (mDocs is not null)
-            {
-                var mDesc = mDocs.Where(x => x.XmlType == XmlType.Summary).FirstOrDefault().Representation;
-                output.AppendLine($"---{mDesc}");
-            }
-
-
-            foreach (var p in parameters)
-            {
-                var paramDesc = mDocs is null ? "" : mDocs.Where(x => x.XmlType == XmlType.Param && x.Name == p.Name).FirstOrDefault().Representation;
-
-                output.AppendLine(p.LuaParamAnnotation(paramDesc));
-            }
-
-            if (method.ReturnType != typeof(void))
-            {
-                var rDesc = mDocs is null ? "" : mDocs.Where(x => x.XmlType == XmlType.Returns).FirstOrDefault().Representation;
-
-                //---@return <type> [<name> [comment] | [name] #<comment>]
-                output.AppendLine($"---@return {method.ReturnType.LuaType()} # {rDesc}");
-            }
-
-            var paramNames = parameters.LuaParamNames();
-            //function ClassName:ClassMethod(name) end
-            //output.AppendLine($"function _{type.LuaType()}:{method.Name}({parameters.LuaParamNames()}) end");
-            output.AppendLine($"function {type.LuaType()}:{method.Name}({parameters.LuaParamNames()}) end");
-            output.AppendLine();
+            HandleMethod(type, method);
         }
         #endregion
 
@@ -334,12 +240,12 @@ namespace LuaDocs
 
             //Create static instance to add static members to
             //output.AppendLine($"---@type {type.LuaType()}");
-            //output.AppendLine($"{type.LuaType()} = {{}}");  //local makes it inaccessible
+            output.AppendLine($"{type.LuaType()} = {{}}");    //Static
 
+            //Constructors show up as instance types but the syntax desired is static?
+            HandleConstructors(type);
             HandleStaticFields(type, flags);
-
             HandleStaticProperties(type, flags);
-
             HandleStaticMethods(type);
         }
 
@@ -351,13 +257,7 @@ namespace LuaDocs
                 .Where(f => f.GetCustomAttributes(typeof(CompilerGeneratedAttribute), true).Length == 0).ToArray();
             foreach (var field in fields)
             {
-                var fId = map.FindId(field);
-                documentation.TryGetValue(fId, out var fDocs);
-                var fDesc = fDocs is null ? "" : fDocs.FirstOrDefault().Representation;
-
-                output.AppendLine($"---@type {field.LuaType()} {fDesc}");
-                //output.AppendLine($"{type.LuaType()}.{field.Name} = {field.LuaDefault()}");
-                output.AppendLine($"_{type.LuaType()}.{field.Name} = {field.LuaDefault()}");
+                HandleField(type, field);
             }
         }
 
@@ -368,13 +268,7 @@ namespace LuaDocs
                 .Where(f => f.GetCustomAttributes(typeof(CompilerGeneratedAttribute), true).Length == 0).ToArray();
             foreach (var property in properties)
             {
-                var pId = map.FindId(property);
-                documentation.TryGetValue(pId, out var pDocs);
-                var pDesc = pDocs is null ? "" : pDocs.FirstOrDefault().Representation;
-
-                output.AppendLine($"---@type {property.LuaType()} {pDesc}");
-                //output.AppendLine($"{type.LuaType()}.{property.Name} = {property.LuaDefault()}");
-                output.AppendLine($"_{type.LuaType()}.{property.Name} = {property.LuaDefault()}");
+                HandleField(type, property);
             }
         }
 
@@ -415,8 +309,67 @@ namespace LuaDocs
                 return;
             }
 
-            var parameters = method.GetParameters();
+            HandleMethod(type, method);
+        }
 
+        private static void HandleConstructors(Type type)
+        {
+            //output.AppendLine($"---------------------Constructors----------------------------");
+            //trevis: Side note, I also changed constructor syntax to MyClass.new() instead of MyClass.__new()…
+            var constructors = type.GetConstructors();
+            foreach (var method in constructors)
+            {
+                if (type is null || method is null)
+                {
+                    Console.WriteLine("Static method null");
+                    return;
+                }
+
+                //ConstructorInfo and MethodInfo both inherit from MethodBase
+                HandleMethod(type, method, method.GetParameters(), type, "new");
+            }
+        }
+
+        #endregion
+
+        /// <summary>
+        /// Adds ---@field annotation for a field or property
+        /// </summary>
+        private static void HandleFieldAnnotation(MemberInfo member)
+        {
+            var mId = map.FindId(member);
+            documentation.TryGetValue(mId, out var mDocs);
+            var fDesc = mDocs is null ? "" : mDocs.FirstOrDefault().Representation;
+
+            output.AppendLine($"---@field {member.Name} {member.LuaType()} {fDesc}");
+        }
+
+        /// <summary>
+        /// Adds type annotation, field, and default value for a field or property
+        /// </summary>
+        private static void HandleField(Type type, MemberInfo field)
+        {
+            var mId = map.FindId(field);
+            documentation.TryGetValue(mId, out var mDocs);
+            var mDesc = mDocs is null ? "" : mDocs.FirstOrDefault().Representation;
+
+            output.AppendLine($"---@type {field.LuaType()} {mDesc}");
+            output.AppendLine($"{type.LuaType()}.{field.Name} = {field.LuaDefault()}");
+        }
+
+        /// <summary>
+        /// Adds method declaration and signature annotation
+        /// </summary>
+        private static void HandleMethod(Type type, MethodInfo method, string nameOverride = null)
+        {
+            var parameters = method.GetParameters();
+            var returnType = method.ReturnType;
+
+            HandleMethod(type, method, parameters, returnType, nameOverride);
+        }
+
+        private static void HandleMethod(Type type, MethodBase method, ParameterInfo[] parameters, Type returnType, string nameOverride = null)
+        {
             var mId = map.FindId(method);
             documentation.TryGetValue(mId, out var mDocs);
             if (mDocs is not null)
@@ -432,21 +385,20 @@ namespace LuaDocs
                 output.AppendLine(p.LuaParamAnnotation(paramDesc));
             }
 
-            if (method.ReturnType != typeof(void))
+            if (returnType != typeof(void))
             {
                 var rDesc = mDocs is null ? "" : mDocs.Where(x => x.XmlType == XmlType.Returns).FirstOrDefault().Representation;
 
                 //---@return <type> [<name> [comment] | [name] #<comment>]
-                output.AppendLine($"---@return {method.ReturnType.LuaType()} # {rDesc}");
+                output.AppendLine($"---@return {returnType.LuaType()} # {rDesc}");
             }
 
             var paramNames = parameters.LuaParamNames();
-            //TypeName.FunctionName = function(params) end
-            //output.AppendLine($"{type.LuaType()}.{method.Name} = function({parameters.LuaParamNames()}) end");
-            output.AppendLine($"_{type.LuaType()}.{method.Name} = function({parameters.LuaParamNames()}) end");
+            var methodName = String.IsNullOrEmpty(nameOverride) ? method.Name : nameOverride;
+            //function ClassName:ClassMethod(name) end
+            output.AppendLine($"function {type.LuaType()}:{methodName}({parameters.LuaParamNames()}) end");
             output.AppendLine();
         }
-        #endregion
 
         private static void HandleEnum(Type type, MemberInfo info, string id, List<XmlEntry> docs)
         {

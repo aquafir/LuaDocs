@@ -32,6 +32,7 @@ STClassName = {}
 ---@param staticArg string Static function argument
 ---@return boolean # Returns true if static function does the needful
 STClassName.staticMethod = function (staticArg) end
+function STClassName.alsoStatic() end
 
 ---@return STClassName
 STClassName.new = function() end

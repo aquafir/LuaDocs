@@ -44,7 +44,9 @@ local fake
 -- local defFieldTest = defConstTest.GetOnlyProperty .. defConstTest.AutoProperty
 -- local defStaticTest = FakeClass.STCONST_FIELD .. FakeClass.STAutoProperty
 
-local defConstTest = FakeClass.new(1, 2, 3)
+local defConstTest = FakeClass:new(1, 2, 3)
 local staticFailsByAcessingInstance = FakeClass.STAutoProperty
+
+
 
 

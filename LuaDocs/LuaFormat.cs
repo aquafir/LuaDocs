@@ -85,12 +85,15 @@ namespace LuaDocs
             GetOrAddLuaType(info.ReturnType.LuaType());
 
         public static string LuaType(this EventInfo info) => info.EventHandlerType.LuaType();
-        public static string LuaType(this FieldInfo info) => info.FieldType.LuaType();
         public static string LuaType(this ParameterInfo info) => info.IsParams() ?
             //Remove [] from variadic param
             //Maybe switch to range if changing from 3.5: .LuaType()[0..^2]
             info.ParameterType.LuaType().Remove(info.ParameterType.LuaType().Length - 2) :
             info.ParameterType.LuaType();
+        //Todo: handle field/property handling from member
+        public static string LuaType(this MemberInfo info) => //info.GetType().LuaType();
+            info is FieldInfo ? (info as FieldInfo).LuaType() : (info as PropertyInfo).LuaType();
+        public static string LuaType(this FieldInfo info) => info.FieldType.LuaType();
         public static string LuaType(this PropertyInfo info) => info.PropertyType.LuaType();
 
         /// <summary>
@@ -176,6 +179,10 @@ namespace LuaDocs
         //https://stackoverflow.com/questions/407337/net-get-default-value-for-a-reflected-propertyinfo
         //Harmony hack maybe use declaring type with Traverse?
         //return Traverse.Create(type).Field(info.Name).GetValue();
+        public static object LuaDefault(this MemberInfo info)
+        {
+            return info is FieldInfo ? (info as FieldInfo).LuaDefault() : (info as PropertyInfo).LuaDefault();
+        }
         public static object LuaDefault(this FieldInfo info)
         {
             if (info.IsLiteral)
